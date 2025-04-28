@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Human Feedback Interface</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f7f7f7;
+            margin: 0;
+            padding: 20px;
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+        .flash-message {
+            margin: 20px auto;
+            padding: 15px;
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+            border-radius: 5px;
+            width: 80%;
+            font-size: 18px;
+            text-align: center;
+        }
+        .card {
+            background: white;
+            padding: 20px;
+            margin: 30px auto;
+            width: 80%;
+            border-radius: 8px;
+            box-shadow: 0px 2px 10px rgba(0,0,0,0.1);
+        }
+        .card p {
+            font-size: 18px;
+        }
+        .buttons {
+            text-align: center;
+            margin-top: 20px;
+        }
+        .buttons button {
+            margin: 8px;
+            padding: 10px 20px;
+            font-size: 16px;
+            border-radius: 6px;
+            border: none;
+            cursor: pointer;
+        }
+        .confirm { background-color: #28a745; color: white; }
+        .correct-spam { background-color: #ffc107; color: black; }
+        .correct-ham { background-color: #17a2b8; color: white; }
+        .skip { background-color: #6c757d; color: white; }
+        .retrain {
+            margin-top: 40px;
+            background-color: #007bff;
+            color: white;
+            padding: 12px 24px;
+            font-size: 18px;
+            border-radius: 6px;
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+        }
+    </style>
+</head>
+<body>
+
+    <h1> Human Feedback - SMS Spam Classification </h1>
+
+    <!-- Flash messages -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, message in messages %}
+          <div class="flash-message">
+            {{ message|safe }}
+          </div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+
+    <div class="card">
+        <p><strong>SMS Text:</strong> {{ text }}</p>
+        <p><strong>Model Prediction:</strong> {{ prediction }}</p>
+
+        <div class="buttons">
+            <form method="POST" action="/feedback" style="display:inline;">
+                <input type="hidden" name="idx" value="{{ idx }}">
+                <button name="action" value="confirm" class="confirm">✅ Confirm</button>
+                <button name="action" value="correct_spam" class="correct-spam">✏️ Correct to Spam</button>
+                <button name="action" value="correct_ham" class="correct-ham">✏️ Correct to Ham</button>
+                <button name="action" value="skip" class="skip">➡️ Skip</button>
+            </form>
+        </div>
+    </div>
+
+    <form method="POST" action="/retrain">
+        <button class="retrain">🔄 Retrain Now</button>
+    </form>
+
+</body>
+</html>
